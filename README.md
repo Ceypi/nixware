@@ -1,5 +1,5 @@
 ### Nixware
-This is a forked/pasted web part from [original source](https://github.com/pa1n-dev/nixware_x64) for [Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/)
+This is a forked/pasted web part from [Nixware](https://github.com/pa1n-dev/nixware_x64) for [Garry's Mod](https://store.steampowered.com/app/4000/Garrys_Mod/)
 
 #### My Links
 - [Loading screen](https://ceypi.github.io/nixware/)
