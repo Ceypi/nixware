@@ -1,21 +1,27 @@
 #pragma once
-#include "../json/json.hpp"
+#include "sdk/interfaces.h"
+#include "utils/hotkey.h"
 
-struct hotkey_t
+namespace globals
 {
-    int key;
+    inline bool unload = false;
 
-    enum type
-    {
-        always_on,
-        hold,
-        toggle,
-        force_disable
-    } type = hold;
+    inline bool screenshot_detected = false;
 
-private:
-    bool toggle_state = false;
-};
+    inline v_panel mat_system_top_panel = false;
+    inline v_panel overlay_popup_panel = false;
+    inline v_panel focus_overlay_panel = false;
+
+    inline c_vector view_origin;
+
+    inline D3DMATRIX world_to_screen;
+    inline float fov = 0;
+    inline void* menu_panel = nullptr;
+
+    inline std::atomic<std::pair<bool, const char*>> waiting_to_be_executed;
+
+    inline std::vector<std::string> add_log;
+}
 
 namespace settings
 {
@@ -26,14 +32,15 @@ namespace settings
 
         namespace colors
         {
-            inline float window_bg[4] = { 0.07f, 0.07f, 0.07f, 1.f };
-            inline float child_bg[4] = { 0.1f, 0.1f, 0.1f, 1.f };
-            inline float text[4] = { 0.4f, 0.4f, 0.4f, 1.f };
-            inline float text_hovered[4] = { 0.8f, 0.8f, 0.8f, 1.f };
-            inline float text_active[4] = { 1.f, 1.f, 1.f, 1.f };
-            inline float frame_bg[4] = { 0.2f, 0.2f, 0.2f, 1.f };
-            inline float frame_hovered_bg[4] = { 0.4f, 0.4f, 0.4f, 1.f };
-            inline float frame_active_bg[4] = { 1.f, 1.f, 1.f, 1.f };
+            inline float window_bg[4]           = { 0.07f, 0.07f, 0.07f, 1.f };
+            inline float child_bg[4]            = { 0.1f, 0.1f, 0.1f, 1.f };
+            inline float text[4]                = { 0.4f, 0.4f, 0.4f, 1.f };
+            inline float text_hovered[4]        = { 0.8f, 0.8f, 0.8f, 1.f };
+            inline float text_active[4]         = { 1.f, 1.f, 1.f, 1.f };
+            inline float frame_bg[4]            = { 0.2f, 0.2f, 0.2f, 1.f };
+            inline float frame_hovered_bg[4]    = { 0.4f, 0.4f, 0.4f, 1.f };
+            inline float frame_active_bg[4]     = { 1.f, 1.f, 1.f, 1.f };
+            inline float notification_color[4] = { 1.f, 1.f, 1.f, 1.f };
         }
     }
 
@@ -56,6 +63,7 @@ namespace settings
             inline bool predict_spread = false;
             inline bool disable_recoil = false;
             inline bool disable_visual_recoil = false;
+            inline bool enable_backtrack = false;
             inline float backtrack = 0;
             inline float smooth = 0.f;
         }
@@ -64,7 +72,7 @@ namespace settings
         {
             inline bool fov = false;
             inline bool snaplines = false;
-
+            
             namespace backtrack
             {
                 inline bool enable = false;
@@ -73,9 +81,9 @@ namespace settings
 
             namespace colors
             {
-                inline float fov[4] = { 1.f, 1.f, 1.f, 1.f };
-                inline float snaplines[4] = { 1.f, 1.f, 1.f, 1.f };
-                inline float backtrack[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float fov[4]         = { 1.f, 1.f, 1.f, 1.f };
+                inline float snaplines[4]   = { 1.f, 1.f, 1.f, 1.f };
+                inline float backtrack[4]   = { 1.f, 1.f, 1.f, 1.f };
             }
         }
     }
@@ -108,7 +116,7 @@ namespace settings
                 inline int material_type = 0;
             }
 
-            namespace colors
+            namespace colors 
             {
                 inline float fake_model[4] = { 1.f, 1.f, 1.f, 1.f };
             }
@@ -122,21 +130,32 @@ namespace settings
             inline bool enable = false;
             inline bool dormant = false;
             inline bool box = false;
+            inline bool health = false;
             inline bool name = false;
+            inline bool steamid = false;
             inline bool rp_team = false;
             inline bool user_group = false;
+            inline bool user_role = false;
             inline bool weapon_name = false;
             inline bool distance = false;
             inline int render_distance = 15000;
+            inline bool spectator_list = false;
+            inline bool water_mark = false;
+            inline bool spotify_playing = false;
+            inline bool console_logger = false;
+            inline bool hitmarker = false;
 
             namespace colors
             {
                 inline float box[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float name[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float steamid[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float rp_team[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float user_group[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float user_role[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float weapon_name[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float distance[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float health[4] = { 1.f, 1.f, 1.f, 1.f };
             }
         }
 
@@ -147,6 +166,7 @@ namespace settings
             inline bool enable = false;
             inline bool dormant = false;
             inline bool box = false;
+            inline bool health = false;
             inline bool name = false;
             inline bool distance = false;
 
@@ -157,6 +177,7 @@ namespace settings
                 inline float box[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float name[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float distance[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float health[4] = { 1.f, 1.f, 1.f, 1.f };
             }
         }
     }
@@ -171,12 +192,27 @@ namespace settings
                 inline hotkey_t hotkey;
                 inline int distance = 100;
             }
+
+            namespace free_cam
+            {
+                inline bool enable = false;
+                inline hotkey_t hotkey;
+                inline int speed = 2;
+            }
+
+            namespace extended_backtrack
+            {
+                inline bool enable = false;
+                inline hotkey_t hotkey;
+                inline int latency = 2;
+            }
         }
 
         namespace movement
         {
             inline bool bhop = false;
             inline bool air_strafe = false;
+            inline bool fast_walk = false;
         }
     }
 
