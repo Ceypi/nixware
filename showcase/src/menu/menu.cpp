@@ -67,8 +67,7 @@ void menu::render()
         EndTabItem();
     }
 
-    // removed
-    /*if (BeginTabItem("AntiAim"))
+    if (BeginTabItem("AntiAim"))
     {
         ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
 
@@ -88,7 +87,7 @@ void menu::render()
         BeginChild("FakeLag's", child_size);
         {
             Checkbox("Enable", &settings::antiaim::fakelags::enable);
-            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); //sv_maxusrcmdprocessticks = 24
+            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); /*sv_maxusrcmdprocessticks = 24*/
             Combo("Method", &settings::antiaim::fakelags::method, "On Ground\0" "In Air\0" "On Move\0" "On Stand\0" "Always\0");
         }
         EndChild();
@@ -103,7 +102,7 @@ void menu::render()
         EndChild();
 
         EndTabItem();
-    }*/
+    }
 
     if (BeginTabItem("Visuals"))
     {
@@ -122,12 +121,10 @@ void menu::render()
                 Checkbox("Dormant", &settings::visuals::players::dormant);
                 Checkbox("Box", &settings::visuals::players::box); ColorEdit4("Box", settings::visuals::players::colors::box, color_edit4_flags);
                 Checkbox("Name", &settings::visuals::players::name); ColorEdit4("Name", settings::visuals::players::colors::name, color_edit4_flags);
-                Checkbox("SteamID", &settings::visuals::players::steamid); ColorEdit4("SteamID", settings::visuals::players::colors::steamid, color_edit4_flags);
                 Checkbox("Rp team", &settings::visuals::players::rp_team); ColorEdit4("Rp team", settings::visuals::players::colors::rp_team, color_edit4_flags);
                 Checkbox("User group", &settings::visuals::players::user_group); ColorEdit4("User group", settings::visuals::players::colors::user_group, color_edit4_flags);
                 Checkbox("Weapon name", &settings::visuals::players::weapon_name); ColorEdit4("Weapon name", settings::visuals::players::colors::weapon_name, color_edit4_flags);
                 Checkbox("Distance", &settings::visuals::players::distance); ColorEdit4("Distance", settings::visuals::players::colors::distance, color_edit4_flags);
-                Checkbox("Health", &settings::visuals::players::health); ColorEdit4("Health", settings::visuals::players::colors::health, color_edit4_flags);
                 SliderInt("Render distance", &settings::visuals::players::render_distance, 100, 20000, "%d m", ImGuiSliderFlags_NoInput);
             }
             break;
@@ -138,8 +135,6 @@ void menu::render()
                 Checkbox("Box", &settings::visuals::entity::box); ColorEdit4("Box", settings::visuals::entity::colors::box, color_edit4_flags);
                 Checkbox("Name", &settings::visuals::entity::name); ColorEdit4("Name", settings::visuals::entity::colors::name, color_edit4_flags);
                 Checkbox("Distance", &settings::visuals::entity::distance); ColorEdit4("Distance", settings::visuals::entity::colors::distance, color_edit4_flags);
-                Checkbox("Health", &settings::visuals::entity::health); ColorEdit4("Health", settings::visuals::entity::colors::health, color_edit4_flags);
-
 
                 if (BeginCombo("List", "..."))
                 {
@@ -170,16 +165,9 @@ void menu::render()
 
         SameLine();
 
-        // yes i understand these do not belong in World but whatever
         BeginChild("World", child_size);
         {
-            Checkbox("Spectator List", &settings::visuals::players::spectator_list);
 
-            Checkbox("Console Logger", &settings::visuals::players::console_logger);
-
-            Checkbox("Spotify Playing", &settings::visuals::players::spotify_playing);
-
-            Checkbox("Watermark", &settings::visuals::players::water_mark);
         }
         EndChild();
 
@@ -194,10 +182,6 @@ void menu::render()
         {
             Checkbox("ThirdPerson", &settings::miscellaneous::globals::third_person::enable); custom::hotkey("Third person Hotkey", &settings::miscellaneous::globals::third_person::hotkey);
             SliderInt("ThirdPerson Distance", &settings::miscellaneous::globals::third_person::distance, 10, 200);
-
-            Checkbox(xorstr("Freecam"), &settings::miscellaneous::globals::free_cam::enable); custom::hotkey("Free Cam Hotkey", &settings::miscellaneous::globals::free_cam::hotkey);
-            SliderInt(xorstr("Freecam Distance"), &settings::miscellaneous::globals::free_cam::speed, 1, 5);
-
         }
         EndChild();
 
@@ -207,7 +191,6 @@ void menu::render()
         {
             Checkbox("Bunny hop", &settings::miscellaneous::movement::bhop);
             Checkbox("Air strafe", &settings::miscellaneous::movement::air_strafe);
-             Checkbox("Fast walk", &settings::miscellaneous::movement::fast_walk);
         }
         EndChild();
 
