@@ -67,6 +67,43 @@ void menu::render()
         EndTabItem();
     }
 
+    if (BeginTabItem("AntiAim"))
+    {
+        ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
+
+        BeginChild("Globals", child_size);
+        {
+            Checkbox("Enable", &settings::antiaim::globals::enable); custom::hotkey("AntiAim Hotkey", &settings::antiaim::globals::hotkey);
+            Checkbox("Fake duck", &settings::antiaim::globals::fake_duck);
+            Checkbox("At target", &settings::antiaim::globals::at_target);
+            Checkbox("Invert yaw", &settings::antiaim::globals::invert_yaw);
+            Combo("Yaw", &settings::antiaim::globals::yaw, "LBY\0");
+            Combo("Pitch", &settings::antiaim::globals::pitch, "Down\0" "Up\0");
+        }
+        EndChild();
+
+        SameLine();
+
+        BeginChild("FakeLag's", child_size);
+        {
+            Checkbox("Enable", &settings::antiaim::fakelags::enable);
+            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); /*sv_maxusrcmdprocessticks = 24*/
+            Combo("Method", &settings::antiaim::fakelags::method, "On Ground\0" "In Air\0" "On Move\0" "On Stand\0" "Always\0");
+        }
+        EndChild();
+
+        SameLine();
+
+        BeginChild("Visuals", child_size);
+        {
+            Checkbox("Fake model", &settings::antiaim::visuals::fake_model::enable); ColorEdit4("Fake model", settings::antiaim::visuals::colors::fake_model, color_edit4_flags);
+            Combo("Material", &settings::antiaim::visuals::fake_model::material_type, "Normal\0" "Flat\0" "Wireframe\0");
+        }
+        EndChild();
+
+        EndTabItem();
+    }
+
     if (BeginTabItem("Visuals"))
     {
         ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
@@ -128,16 +165,9 @@ void menu::render()
 
         SameLine();
 
-        // TODO: rename this later.
         BeginChild("World", child_size);
         {
-          Checkbox("Spectator List", &settings::visuals::players::spectator_list);
 
-            Checkbox("Console Logger", &settings::visuals::players::console_logger);
-
-            Checkbox("Spotify Playing", &settings::visuals::players::spotify_playing);
-
-            Checkbox("Watermark", &settings::visuals::players::water_mark);
         }
         EndChild();
 
@@ -272,57 +302,6 @@ void menu::render()
     PopStyleColor(9);
     PopStyleVar();
 }
-
-void menu::DrawWatermark() {
-	if (!settings::visuals::players::water_mark)
-		return;
-
-	static int ping = 0;
-	static float lastTime = 0.f;
-	static int curfps = 0;
-	static int oldframecount = 0;
-
-	if (std::fabsf(1 - lastTime) >= 1.0f) {
-		lastTime = 59;
-		curfps = 60;
-		oldframecount = 60;
-	}
-
-	ImVec2 screen = render_manager::GetMainViewport()->Size;
-
-	time_t seconds = time(NULL);
-	tm* timeinfo = localtime(&seconds);
-
-	std::stringstream str;
-
-	str << "kami";
-
-	std::string fps_str = std::to_string(curfps);
-	std::string ping_str = std::to_string(ping);
-	std::string hour = (timeinfo->tm_hour < 10 ? "0" : "") + std::to_string(timeinfo->tm_hour);
-	std::string minute = (timeinfo->tm_min < 10 ? "0" : "") + std::to_string(timeinfo->tm_min);
-	std::string second = (timeinfo->tm_sec < 10 ? "0" : "") + std::to_string(timeinfo->tm_sec);
-
-	str << " | fps: " << fps_str;
-	str << " | ping: " << ping_str;
-	str << " | time: " << hour << ":" << minute << ":" << second;
-
-	ImVec2 textSize = ImGui::CalcTextSize(str.str().c_str());
-	ImVec2 windowSize = ImVec2(textSize.x + 20, textSize.y + 10); // Add padding around the text
-
-	ImVec2 windowPos = ImVec2(screen.x - windowSize.x - 10, 10); // Position the watermark at the top right of the screen
-	if (windowPos.x < 0) windowPos.x = 0; // Ensure the window does not extend beyond the left edge of the screen
-
-	ImGui::SetNextWindowPos(windowPos);
-	ImGui::SetNextWindowSize(windowSize);
-	ImGui::Begin("Watermark", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
-	{
-		ImGui::Text("%s", str.str().c_str());
-	}
-	ImGui::End();
-}
-
-
 
 void menu::custom::hotkey(const char* label, hotkey_t* hotkey)
 {

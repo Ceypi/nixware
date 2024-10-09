@@ -129,11 +129,6 @@ namespace settings
             inline bool distance = false;
             inline int render_distance = 15000;
 
-            // for misc stuff
-            inline bool spectator_list = false;
-            inline bool console_logger = false;
-            inline bool watermark = false;
-
             namespace colors
             {
                 inline float box[4] = { 1.f, 1.f, 1.f, 1.f };
