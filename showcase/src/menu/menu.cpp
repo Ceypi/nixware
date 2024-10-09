@@ -67,43 +67,6 @@ void menu::render()
         EndTabItem();
     }
 
-    /*if (BeginTabItem("AntiAim"))
-    {
-        ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
-
-        BeginChild("Globals", child_size);
-        {
-            Checkbox("Enable", &settings::antiaim::globals::enable); custom::hotkey("AntiAim Hotkey", &settings::antiaim::globals::hotkey);
-            Checkbox("Fake duck", &settings::antiaim::globals::fake_duck);
-            Checkbox("At target", &settings::antiaim::globals::at_target);
-            Checkbox("Invert yaw", &settings::antiaim::globals::invert_yaw);
-            Combo("Yaw", &settings::antiaim::globals::yaw, "LBY\0");
-            Combo("Pitch", &settings::antiaim::globals::pitch, "Down\0" "Up\0");
-        }
-        EndChild();
-
-        SameLine();
-
-        BeginChild("FakeLag's", child_size);
-        {
-            Checkbox("Enable", &settings::antiaim::fakelags::enable);
-            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); //sv_maxusrcmdprocessticks = 24
-            Combo("Method", &settings::antiaim::fakelags::method, "On Ground\0" "In Air\0" "On Move\0" "On Stand\0" "Always\0");
-        }
-        EndChild();
-
-        SameLine();
-
-        BeginChild("Visuals", child_size);
-        {
-            Checkbox("Fake model", &settings::antiaim::visuals::fake_model::enable); ColorEdit4("Fake model", settings::antiaim::visuals::colors::fake_model, color_edit4_flags);
-            Combo("Material", &settings::antiaim::visuals::fake_model::material_type, "Normal\0" "Flat\0" "Wireframe\0");
-        }
-        EndChild();
-
-        EndTabItem();
-    }*/
-
     if (BeginTabItem("Visuals"))
     {
         ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
