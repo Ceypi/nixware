@@ -67,7 +67,7 @@ void menu::render()
         EndTabItem();
     }
 
-    if (BeginTabItem("AntiAim"))
+    /*if (BeginTabItem("AntiAim"))
     {
         ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
 
@@ -87,7 +87,7 @@ void menu::render()
         BeginChild("FakeLag's", child_size);
         {
             Checkbox("Enable", &settings::antiaim::fakelags::enable);
-            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); /*sv_maxusrcmdprocessticks = 24*/
+            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); //sv_maxusrcmdprocessticks = 24
             Combo("Method", &settings::antiaim::fakelags::method, "On Ground\0" "In Air\0" "On Move\0" "On Stand\0" "Always\0");
         }
         EndChild();
@@ -102,7 +102,7 @@ void menu::render()
         EndChild();
 
         EndTabItem();
-    }
+    }*/
 
     if (BeginTabItem("Visuals"))
     {
