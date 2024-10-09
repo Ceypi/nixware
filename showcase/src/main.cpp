@@ -58,6 +58,8 @@ void loop()
 
     menu::render();
 
+    menu::watermark();
+
     Render();
 
     int display_w, display_h;
