@@ -16,6 +16,8 @@ namespace menu
 
     void render();
 
+    void watermark();
+
     namespace custom
     {
         void hotkey(const char* label, hotkey_t* hotkey);

@@ -165,9 +165,16 @@ void menu::render()
 
         SameLine();
 
+        // TODO: rename this later.
         BeginChild("World", child_size);
         {
+          Checkbox("Spectator List", &settings::visuals::players::spectator_list);
 
+            Checkbox("Console Logger", &settings::visuals::players::console_logger);
+
+            Checkbox("Spotify Playing", &settings::visuals::players::spotify_playing);
+
+            Checkbox("Watermark", &settings::visuals::players::water_mark);
         }
         EndChild();
 
@@ -302,6 +309,57 @@ void menu::render()
     PopStyleColor(9);
     PopStyleVar();
 }
+
+void menu::DrawWatermark() {
+	if (!settings::visuals::players::water_mark)
+		return;
+
+	static int ping = 0;
+	static float lastTime = 0.f;
+	static int curfps = 0;
+	static int oldframecount = 0;
+
+	if (std::fabsf(1 - lastTime) >= 1.0f) {
+		lastTime = 59;
+		curfps = 60;
+		oldframecount = 60;
+	}
+
+	ImVec2 screen = render_manager::GetMainViewport()->Size;
+
+	time_t seconds = time(NULL);
+	tm* timeinfo = localtime(&seconds);
+
+	std::stringstream str;
+
+	str << "kami";
+
+	std::string fps_str = std::to_string(curfps);
+	std::string ping_str = std::to_string(ping);
+	std::string hour = (timeinfo->tm_hour < 10 ? "0" : "") + std::to_string(timeinfo->tm_hour);
+	std::string minute = (timeinfo->tm_min < 10 ? "0" : "") + std::to_string(timeinfo->tm_min);
+	std::string second = (timeinfo->tm_sec < 10 ? "0" : "") + std::to_string(timeinfo->tm_sec);
+
+	str << " | fps: " << fps_str;
+	str << " | ping: " << ping_str;
+	str << " | time: " << hour << ":" << minute << ":" << second;
+
+	ImVec2 textSize = ImGui::CalcTextSize(str.str().c_str());
+	ImVec2 windowSize = ImVec2(textSize.x + 20, textSize.y + 10); // Add padding around the text
+
+	ImVec2 windowPos = ImVec2(screen.x - windowSize.x - 10, 10); // Position the watermark at the top right of the screen
+	if (windowPos.x < 0) windowPos.x = 0; // Ensure the window does not extend beyond the left edge of the screen
+
+	ImGui::SetNextWindowPos(windowPos);
+	ImGui::SetNextWindowSize(windowSize);
+	ImGui::Begin("Watermark", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+	{
+		ImGui::Text("%s", str.str().c_str());
+	}
+	ImGui::End();
+}
+
+
 
 void menu::custom::hotkey(const char* label, hotkey_t* hotkey)
 {
